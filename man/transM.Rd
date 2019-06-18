@@ -24,4 +24,3 @@ A \code{list} with the following components:
 used in creating resampled vectors for the (1 - alpha)\% critical threshold
 value on the mutual info.
 }
-

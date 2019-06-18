@@ -28,4 +28,3 @@ A 3-panel plot of original vectors (top), their discretized values
   the mutual information at multiple lags. It is a helper function for
   \code{muti}.
 }
-

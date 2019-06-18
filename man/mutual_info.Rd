@@ -20,4 +20,3 @@ A scalar of class `numeric` of the (possibly normalized) mutual
 \code{mutual_info} calculates the mutual information between two vectors. It
   is a helper function for \code{muti}.
 }
-

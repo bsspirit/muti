@@ -10,43 +10,28 @@
 #'   the i-th value, based on the i-1 and i+1 values, is a "trough" (=1),
 #'   "decrease" (=2), "same" (=3), "increase" (=4), or "peak" (=5).
 #'
-symbolize <- function(xy) {
-  ## of interest and converts them from numeric to symbolic.
-  ## check input for errors
-  if(dim(xy)[2] != 2) {
-    stop("xy must be an [n x 2] matrix \n\n", call.=FALSE)
+symbolize<-function(xy){
+  if(ncol(xy)!=2) {
+    stop("xy must be an [n x 2] matrix \n\n", call. = FALSE)
   }
-  ## get ts length
-  TT <- dim(xy)[1]
-  ## init su matrix
-  su <- matrix(NA, TT, 2)
-  ## convert to symbols
-  ## loop over 2 vars
-  for(i in 1:2) {
-    for(t in 2:(TT-1)) {
-      ## if xy NA, also assign NA to su
-      if(any(is.na(xy[(t-1):(t+1),i]))) { su[t,i] <- NA }
-      ## else get correct symbol
-      else {
-        if(xy[t,i] == xy[t-1,i] & xy[t,i] == xy[t+1,i]) {
-          ## same
-          su[t,i] <- 3
-          }
-        if(xy[t,i] > xy[t-1,i]) {
-          ## peak
-          if(xy[t,i] > xy[t+1,i]) { su[t,i] <- 5 }
-          ## increase
-          else { su[t,i] <- 4 }
-        }
-        if(xy[t,i] < xy[t-1,i]) {
-          ## trough
-          if(xy[t,i] < xy[t+1,i]) { su[t,i] <- 1 }
-          ## decrease
-          else { su[t,i] <- 2 }
-        }
-      } ## end else
-    } ## end t loop
-  } ## end i loop
-  ## return su matrix
-  return(su)
+  
+  idx<-2:(nrow(xy)-1)
+  apply(xy,2,function(row){
+    na<-which(is.na(row[idx]+row[idx-1]+row[idx+1]))
+    n3<-which(row[idx]==row[idx-1] & row[idx]==row[idx+1])
+    n5<-which(row[idx]>row[idx-1] & row[idx]>row[idx+1])
+    n4<-which(row[idx]>row[idx-1] & row[idx]<=row[idx+1])
+    n1<-which(row[idx]<row[idx-1] & row[idx]<row[idx+1])
+    n2<-which(row[idx]<row[idx-1] & row[idx]>=row[idx+1])
+
+    line<-rep(0,length(idx))
+    line[na]<-NA
+    line[n1]<-1
+    line[n2]<-2
+    line[n3]<-3
+    line[n4]<-4
+    line[n5]<-5
+    c(NA,line,NA)
+  })
 }
+

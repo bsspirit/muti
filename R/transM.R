@@ -14,32 +14,35 @@
 #' \item{\code{MM}}{Transition probability matrix from bin-i to bin-j.}
 #' }
 #'
-#' @importFrom stats runif
+#' @importFrom stats runif aggregate
 #'
-transM <- function(x,n_bins) {
-  ## helper function for estimating transition matrix used in
-  ## creating resampled ts for the CI on mutual info
-  ## replace NA with runif()
-  x[is.na(x)] <- runif(length(x[is.na(x)]),min(x,na.rm=TRUE),max(x,na.rm=TRUE))
-  ## length of ts
-  tt <- length(x)
-  ## get bins via slightly extended range
-  bins <- seq(min(x)-0.001,max(x),length.out=n_bins+1)
-  ## discretize ts
-  hin <- vector("numeric",tt)
-  for(b in 1:n_bins) {
-    hin[x > bins[b] & x <= bins[b+1]] <- b
-  }
-  ## matrix of raw-x & discrete-x
-  xn <- cbind(x,hin)
-  ## transition matrix from bin-i to bin-j
-  MM <- matrix(0,n_bins,n_bins)
-  for(i in 1:n_bins) {
-    for(j in 1:n_bins) {
-      MM[i,j] <- sum(hin[-tt]==i & hin[-1]==j)
+transM<-function(x,n_bins){
+  x[is.na(x)] <- runif(length(x[is.na(x)]), min(x, na.rm = TRUE),max(x, na.rm = TRUE))
+  n<-length(x)
+  xn<-cbind(x,hin=cut(x,7))
+
+  hin<-xn[,2]
+  a<-data.frame(id=1:(n-1),a=hin[1:(n-1)])
+  b<-data.frame(id=1:(n-1),b=hin[2:n])
+  ab<-merge(a,b,by="id",all=TRUE)
+  ab$v<-1
+  abm<-aggregate(v~a+b,data=ab,sum)
+  
+  MM <- matrix(0, n_bins, n_bins)
+  apply(abm,1,function(row){
+    MM[row[1],row[2]]<<-row[3]
+    invisible()
+  })
+  
+  MN<-apply(MM,1,function(row){
+    s<-sum(row)
+    if(s>0){
+      row/s
+    }else{
+      rep(1/n_bins,n_bins)
     }
-    if(sum(MM[i,])>0) { MM[i,] <- MM[i,]/sum(MM[i,]) }
-    else { MM[i,] <- 1/n_bins }
-  }
-  return(list(xn=xn,MM=MM))
+  })
+  MN<-t(MN)
+  
+  return(list(xn = xn, MM = MN))
 } ## end function

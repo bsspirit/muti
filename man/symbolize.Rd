@@ -19,4 +19,3 @@ An (n-2) x 2 \code{matrix} of integer symbols that indicate whether
 \code{symbolize} converts numeric vectors to symbolic vectors. It is a helper
   function for \code{muti}.
 }
-

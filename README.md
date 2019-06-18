@@ -15,3 +15,11 @@ You can install the development version using `devtools`.
       library("devtools")
     }
     devtools::install_github("mdscheuerell/muti")
+
+Update Code by DanZhang.
+
+    if(!require("devtools")) {
+      install.packages("devtools")
+      library("devtools")
+    }
+    devtools::install_github("bsspirit/muti")

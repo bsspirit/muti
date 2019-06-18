@@ -18,4 +18,3 @@ A vector of resampled values.
 \code{newZ} creates new vector based on a transition matrix. It is a helper
   function for \code{muti}.
 }
-

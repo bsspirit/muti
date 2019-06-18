@@ -4,8 +4,8 @@
 \alias{muti}
 \title{Calculate the mutual information between two vectors.}
 \usage{
-muti(x, y, sym = TRUE, n_bins = NULL, normal = FALSE, lags = seq(-4, 4),
-  mc = 100, alpha = 0.05)
+muti(x, y, sym = TRUE, n_bins = NULL, normal = FALSE,
+  lags = seq(-4, 4), mc = 100, alpha = 0.05)
 }
 \arguments{
 \item{x}{First vector of data. Must be \code{integer} or \code{numeric}.}
@@ -53,4 +53,3 @@ y <- x + rnorm(TT)
 muti(x, y)
 
 }
-
